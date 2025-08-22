@@ -17,7 +17,6 @@ class Solution {
                 }
             }
             else if(cur > 5) {
-                
                 answer += (10 - cur);
                 storey += 1;
             } 
