@@ -1,53 +1,80 @@
 import java.util.*;
 
 class Solution {
-
-    static int[][][] board = new int[105][105][20005]; // [r][c][t]
-    static Map<Integer, int[]> pos = new HashMap<>();
-
+    
+    static int[] dx = {1, -1, 0, 0};
+    static int[] dy = {0, 0, 1, -1};
+    static int[][][] board = new int[105][105][20005];
+    static int turn = 0;
+    static Map<Integer, int[]> map = new HashMap<>();
+    
     public int solution(int[][] points, int[][] routes) {
-        // 포인트 번호 -> (r, c) 0-index 매핑
-        for (int i = 0; i < points.length; i++) {
-            pos.put(i + 1, new int[]{points[i][0] - 1, points[i][1] - 1});
-        }
-
-        // 각 로봇을 절대시간 t 기준으로 기록 (모두 t=0 동시 출발)
-        for (int i = 0; i < routes.length; i++) {
-            int[] start = pos.get(routes[i][0]);
-            int r = start[0], c = start[1];
-            int t = 0;
-
-            // 출발 시각(0초) 기록
-            board[r][c][t]++;
-
-            for (int j = 0; j < routes[i].length - 1; j++) {
-                int[] end = pos.get(routes[i][j + 1]);
-                int tr = end[0], tc = end[1];
-
-                // r 좌표를 먼저 맞춘다
-                while (r != tr) {
-                    r += (r < tr ? 1 : -1);
-                    t++;
-                    if (t <= 20000) board[r][c][t]++;
-                }
-                // 그다음 c 좌표
-                while (c != tc) {
-                    c += (c < tc ? 1 : -1);
-                    t++;
-                    if (t <= 20000) board[r][c][t]++;
-                }
-            }
-        }
-
-        // 같은 시간 t, 같은 좌표에 로봇 수 >= 2인 경우를 모두 합산
         int answer = 0;
-        for (int t = 0; t <= 20000; t++) {
-            for (int r = 0; r <= 100; r++) {
-                for (int c = 0; c <= 100; c++) {
-                    if (board[r][c][t] >= 2) answer++;
+                
+        for(int i = 0; i < points.length; i++) {
+            int x = points[i][0] - 1;
+            int y = points[i][1] - 1;
+            
+            map.put(i + 1, new int[] {x, y});
+        }
+        
+        move(routes);        
+        
+        for(int i = 0; i <= 100; i++) {
+            for(int j = 0; j <= 100; j++) {
+                for(int turn = 0; turn < 20005; turn++) {
+                    if(board[i][j][turn] >= 2) {
+                        answer++;
+                    }
                 }
             }
         }
+        
         return answer;
+    }
+    
+    static void move(int[][] routes) {
+        for(int i = 0; i < routes.length; i++) {
+            turn = 0;            
+            for(int j = 0; j < routes[i].length - 1; j++) {
+                int[] start = map.get(routes[i][j]);
+                int[] end = map.get(routes[i][j + 1]);
+                
+                int curX = start[0]; 
+                int curY = start[1];
+                
+                int endX = end[0];
+                int endY = end[1];
+                
+                while(true) {                    
+                    if(curX == endX && curY == endY) {
+                        if(j == routes[i].length - 2) {
+                            turn++;
+                            board[curX][curY][turn]++;
+                        }
+                        break;
+                    }
+                    
+                    turn++;
+                    board[curX][curY][turn]++;
+                    
+                    for(int dir = 0; dir < 4; dir++) {
+                        int nx = curX + dx[dir];
+                        int ny = curY + dy[dir];
+                        
+                        if(nx < 0 || nx >= 100 || ny < 0 || ny >= 100) continue;
+                        
+                        int cur = Math.abs(curX - endX) + Math.abs(curY - endY);
+                        int nxt = Math.abs(nx - endX) + Math.abs(ny - endY);
+                        
+                        if(cur > nxt) {
+                            curX = nx;
+                            curY = ny;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
