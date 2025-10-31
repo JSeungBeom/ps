@@ -3,14 +3,22 @@ import java.io.*;
 
 class Solution {
     public int solution(int[] nums) {
-        HashSet<Integer> pokemons = new HashSet<>();
+        int n = nums.length;
         
-        for(int i = 0; i < nums.length; i++){
-            pokemons.add(nums[i]);
+        int max = n / 2;
+        
+        Arrays.sort(nums);
+        
+        int cnt = 1;
+        int prev = nums[0];
+        
+        for(int i = 1; i < n; i++) {
+            if(prev != nums[i]) {
+                cnt++;
+                prev = nums[i];
+            }    
         }
         
-        int n = nums.length / 2;
-        
-        return pokemons.size() > n ? n : pokemons.size();
+        return max < cnt ? max : cnt;
     }
 }
