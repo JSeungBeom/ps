@@ -6,8 +6,8 @@ import java.util.StringTokenizer;
 public class Main {
 
 	static int N;
-	static int[] dp1;
-	static int[] dp2;
+	static long[] dp1;
+	static long[] dp2;
 	
     public static void main(String[] args) throws IOException {
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,8 +18,8 @@ public class Main {
     		System.out.println(4); return;
     	}
     	
-    	dp1 = new int[N + 1];
-    	dp2 = new int[N + 1];
+    	dp1 = new long[N + 1];
+    	dp2 = new long[N + 1];
     	
     	dp1[1] = 1;
     	dp2[1] = 1;
