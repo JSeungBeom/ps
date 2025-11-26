@@ -84,20 +84,14 @@ public class Main {
     	int nx = x + dx[dir];
     	int ny = y + dy[dir];
     	
-    	boolean out = OOB(nx, ny);
-    	boolean blue = (!out && board[nx][ny] == 2);
+    	if(OOB(nx, ny)) {
+    		dir = reverse(dir);
+        	chess.dir = dir;
 
-    	if(out || blue) {
-    	    dir = reverse(dir);
-    	    chess.dir = dir;
-
-    	    nx = x + dx[dir];
-    	    ny = y + dy[dir];
-
-    	    out = OOB(nx, ny);
-    	    blue = (!out && board[nx][ny] == 2);
-
-    	    if(out || blue) return;
+    		nx = x + dx[dir];
+    		ny = y + dy[dir];
+    		
+    		if(OOB(nx, ny)) return;
     	}
     	
     	List<Chess> chesses = chessList[x][y].chessList;
@@ -111,7 +105,6 @@ public class Main {
     		added.add(chesses.get(i));
     	}
     	
-    	chess.dir = dir;
     	
     	if(board[nx][ny] == 0) {
     		chessList[nx][ny].addChesses(added);
